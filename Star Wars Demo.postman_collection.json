@@ -1,0 +1,172 @@
+{
+	"info": {
+		"_postman_id": "37c36d0d-e9b1-401a-9349-5385b9583f3d",
+		"name": "Star Wars Demo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "53996",
+		"_collection_link": "https://obscurity.postman.co/workspace/Bitt-for-Batt~98f457e5-3428-4caa-9719-ba69ffd4ee7c/collection/53996-37c36d0d-e9b1-401a-9349-5385b9583f3d?action=share&source=collection_link&creator=53996"
+	},
+	"item": [
+		{
+			"name": "Init",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Reset the index",
+							"pm.collectionVariables.set(\"vehicleIndex\", \"0\");",
+							"",
+							"// Save the person data",
+							"let responseData = pm.response.json();",
+							"pm.collectionVariables.set(\"personData\", JSON.stringify(responseData));",
+							"",
+							"// Extract and store the vehicle URLs",
+							"let vehicles = responseData.vehicles;",
+							"pm.collectionVariables.set(\"vehicleUrls\", JSON.stringify(vehicles));",
+							"",
+							"console.log(\"Vehicle URLs initialized:\", vehicles);",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/people/{{person_number}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"people",
+						"{{person_number}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Vehicle",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let vehicleUrls = JSON.parse(pm.collectionVariables.get(\"vehicleUrls\") || \"[]\");",
+							"let index = parseInt(pm.collectionVariables.get(\"vehicleIndex\") || \"0\");",
+							"",
+							"if (index >= vehicleUrls.length) {",
+							"    // Stop collection runner if done",
+							"    postman.setNextRequest(null);",
+							"} else {",
+							"    pm.collectionVariables.set(\"vehicleUrl\", vehicleUrls[index]);",
+							"}",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"try {",
+							"    let urls = JSON.parse(pm.collectionVariables.get(\"vehicleUrls\") || \"[]\");",
+							"let index = parseInt(pm.collectionVariables.get(\"vehicleIndex\") || \"0\");",
+							"",
+							"if (index >= urls.length) {",
+							"    pm.execution.setNextRequest(null); // Stop the loop",
+							"} else {",
+							"    let currentVehicleUrl = urls[index];",
+							"    pm.collectionVariables.set(\"vehicleUrl\", currentVehicleUrl);",
+							"    console.log(`Index ${index}: ${currentVehicleUrl}`);",
+							"}",
+							"",
+							"} catch (err) {",
+							"    console.error(\"Failed to parse response as JSON. Response was:\", pm.response.text());",
+							"}",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{vehicleUrl}}\n",
+					"host": [
+						"{{vehicleUrl}}\n"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "personData",
+			"value": ""
+		},
+		{
+			"key": "vehicleUrls",
+			"value": ""
+		},
+		{
+			"key": "vehicleUrl",
+			"value": ""
+		},
+		{
+			"key": "vehicleIndex",
+			"value": ""
+		},
+		{
+			"key": "baseUrl",
+			"value": ""
+		},
+		{
+			"key": "person",
+			"value": ""
+		}
+	]
+}
